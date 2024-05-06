@@ -14,13 +14,15 @@ func sayHello(w http.ResponseWriter, r * http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
 	fmt.Println(r.Method)
 	if r.Method == "GET" {
 		t, _ := template.ParseFiles("http/login.gtpl")
 		fmt.Println(t)
 		log.Println(t.Execute(w, nil))
 	} else {
-
+		fmt.Println("username", r.Form["username"])
+		fmt.Println("password", r.Form["password"])
 	}
 }
 
