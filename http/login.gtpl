@@ -3,7 +3,7 @@
         <title></title>
     </head>
     <body>
-        <form action="/login?username=astaxie" method="post">
+        <form action="/login" method="post">
             <input type="checkbox" name="interest" value="music">Music
             <input type="checkbox" name="interest" value="movies">Movies
             <input type="checkbox" name="interest" value="coding">Coding
