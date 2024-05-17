@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"sync"
+	"time"
 )
 
 type Session interface {
@@ -32,7 +33,26 @@ type Manager struct {
 	maxLifeTime int64
 }
 
+type MemoryStore struct {
+	sync.Map
+}
+
+type CSession struct {
+	ID string
+	Expires time.Time
+	Date map[interface {}]interface{}
+}
+
+func (s *CSession) Get(key interface{}) (interface{}, error) {
+	sess, err := globalSessions.provider.SessionRead(s.ID)
+	if err != nil {
+		return nil, err
+	}
+	return sess, nil
+}
+
 var provides = make(map[string]Provider)
+var globalSessions *Manager
 func NewManager(provideName, cookieName string, maxLifeTime int64)(*Manager, error) {
 	provider, ok := provides[provideName]
 	if !ok {
@@ -41,11 +61,25 @@ func NewManager(provideName, cookieName string, maxLifeTime int64)(*Manager, err
 	return &Manager{provider: provider, cookieName: cookieName, maxLifeTime: maxLifeTime}, nil
 }
 
-var globalSessions *Manager
+func NewSession()(*CSession, error) {
+	
+}
 
-func init () {
+func initSession() {
 	globalSessions, _ = NewManager("memory", "sessionId", 3600)
 }
+
+func (m *MemoryStore)SessionInit(sid string) error {
+	// 初始化session，将sid和session对应起来
+	// 需要去new一个session
+	// m.Store(sid, )
+	return nil
+}
+
+func initProvide() {
+
+}
+
 
 func Register(name string, provider Provider) {
 	if provider == nil {
@@ -94,9 +128,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func main(){
+	initSession()
 	http.HandleFunc("/login", login)
 	err := http.ListenAndServe(":8081", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
 }
+
+
+
