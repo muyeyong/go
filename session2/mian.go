@@ -69,6 +69,7 @@ func (sm *SessionManager) Middleware(next http.Handler) http.Handler {
 		cookie, err := r.Cookie("session_id")
 		if err == http.ErrNoCookie {
 			session := sm.CreateSession()
+			fmt.Println(session.ID)
 			cookie = &http.Cookie{
 				Name:     "session_id",
 				Value:    session.ID,
