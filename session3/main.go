@@ -159,6 +159,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
+	
 	cookie, err := r.Cookie("session_id")
 	fmt.Println(cookie.Value)
 	if cookie.Value == "" || err != nil {
